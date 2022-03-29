@@ -2,7 +2,7 @@ looseTol = 0.1;
 
 // measured
 LEDSize = 4.9;
-LEDTol = .2;
+LEDTol = .1;
 LEDPitch = 8.8;
 LEDBoardSize = 71.3/4 + 0.5;
 LEDPenetration = 1.0;
@@ -112,8 +112,8 @@ difference() {
       for ( YIndex = [0:NumX - 1] ){
          // Internal Chambers
          translate([XArrayEdge + XIndex*LEDPitch, YArrayEdge + YIndex*LEDPitch, BaseChamberHeight + IntWallThicknessZ])
-         cube([InternalChamberWidth, InternalChamberWidth, InternalChamberHeight/*-ConeHeight*/], false);
-          //made shorterto allow support cone to be added
+         cube([InternalChamberWidth, InternalChamberWidth, InternalChamberHeight-ConeHeight], false);
+          //made shorter to allow support cone to be added
 
          // Head Chambers
          translate([XArrayEdge + XIndex*LEDPitch, YArrayEdge + YIndex*LEDPitch, ZLength - HeadChamberHeight])
@@ -124,21 +124,26 @@ difference() {
          cylinder(IntWallThicknessZ, EppendorfDiameter/2.0, EppendorfDiameter/2.0, $fn=Smoothness);
           
         //Support Cone 
-      //   intersection() {
+        intersection() {
         
-     //    translate([XArrayEdge + InternalChamberWidth/2.0 + XIndex*LEDPitch, YArrayEdge + InternalChamberWidth/2.0 + YIndex*LEDPitch, ZLength - HeadChamberHeight-IntWallThicknessZ-ConeHeight])
-    //     cylinder(ConeHeight,sqrt(2)*InternalChamberWidth, EppendorfDiameter/2.0, $fn=Smoothness);
+        translate([XArrayEdge + InternalChamberWidth/2.0 + XIndex*LEDPitch, YArrayEdge + InternalChamberWidth/2.0 + YIndex*LEDPitch, ZLength - HeadChamberHeight-IntWallThicknessZ-ConeHeight])
+      cylinder(ConeHeight,sqrt(2)*InternalChamberWidth, EppendorfDiameter/2.0, $fn=Smoothness);
              
-    //     translate([XArrayEdge + XIndex*LEDPitch, YArrayEdge + YIndex*LEDPitch, ZLength - HeadChamberHeight-IntWallThicknessZ-ConeHeight])
-     //    cube([InternalChamberWidth, InternalChamberWidth, ConeHeight], false);
+        translate([XArrayEdge + XIndex*LEDPitch, YArrayEdge + YIndex*LEDPitch, ZLength - HeadChamberHeight-IntWallThicknessZ-ConeHeight])
+        cube([InternalChamberWidth, InternalChamberWidth, ConeHeight], false);
           
-   //      } //intersection
+        } //intersection
 
          // LED Holes
          translate([XArrayEdge + InternalChamberWidth/2.0 + XIndex*LEDPitch, YArrayEdge + InternalChamberWidth/2.0 + YIndex*LEDPitch, BaseChamberHeight + IntWallThicknessZ/2.0])
          cube([LEDSize + 2* LEDTol, LEDSize + 2* LEDTol, IntWallThicknessZ], true);
       }
    }//for loop
+   
+   //Can be used to remove two of the walls to allow the LED board to be placed in 
+   //translate([ExtWallThickness, ExtWallThickness, 0])
+   //cube([100,100, BaseChamberHeight], false);
+   
 } // difference
           
 }
